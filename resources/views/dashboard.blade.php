@@ -95,7 +95,7 @@
                 </div>
 
                 <!-- Create document form (hidden by default, shown when blank template clicked) -->
-                <div class="create-document-section" id="create-document" style="display: none;">
+                <div class="create-document-section" id="create-document">
                     <form method="POST" action="{{ route('documents.store') }}" id="create-form" class="create-document-form">
                         @csrf
                         <div class="form-group">
@@ -117,9 +117,7 @@
                             <div class="document-filters">
                                 <button class="filter-dropdown">
                                     <span>Owned by me</span>
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px;">
-                                        <polyline points="6 9 12 15 18 9"/>
-                                    </svg>
+                                    <span class="icon icon-sm">@include('icons.chevron-down')</span>
                                 </button>
                                 <div class="view-actions">
                                     <button class="view-action-btn active" aria-label="Grid view">
@@ -142,8 +140,8 @@
                                 <div class="document-card" onclick="window.location.href='{{ route('documents.show', $document) }}'" role="button" tabindex="0" onkeydown="if(event.key === 'Enter' || event.key === ' ') { window.location.href='{{ route('documents.show', $document) }}'; }">
                                     <div class="document-card-thumbnail">
                                         <div class="document-card-thumbnail-content">
-                                            <div style="font-weight: 500; color: var(--text-primary); margin-bottom: 4px;">{{ Str::limit($document->title, 30) }}</div>
-                                            <div style="font-size: 10px; line-height: 1.3; opacity: 0.7;">
+                                            <div class="document-card-preview-title">{{ Str::limit($document->title, 30) }}</div>
+                                            <div class="document-card-preview-content">
                                                 {{ Str::limit(strip_tags($document->content), 100) ?: 'Empty document' }}
                                             </div>
                                         </div>
@@ -165,7 +163,7 @@
                             </div>
                             <h3>No documents yet</h3>
                             <p>Create your first document to get started with collaborative editing</p>
-                            <button class="btn btn-primary mt-6" onclick="document.querySelector('.create-document-section').style.display='block'; document.getElementById('create-form').scrollIntoView({behavior: 'smooth'});">
+                            <button class="btn btn-primary mt-6">
                                 <span class="icon icon-sm">@include('icons.add')</span>
                                 <span>Create Your First Document</span>
                             </button>
@@ -182,7 +180,7 @@
             card.addEventListener('click', function() {
                 if (this.querySelector('.template-card-blank')) {
                     const formSection = document.querySelector('.create-document-section');
-                    formSection.style.display = 'block';
+                    formSection.classList.add('show');
                     setTimeout(() => {
                         document.getElementById('create-form').scrollIntoView({behavior: 'smooth'});
                         document.getElementById('title').focus();
@@ -190,6 +188,19 @@
                 }
             });
         });
+        
+        // Show form when empty state button is clicked
+        const emptyStateBtn = document.querySelector('.empty-state .btn');
+        if (emptyStateBtn) {
+            emptyStateBtn.addEventListener('click', function() {
+                const formSection = document.querySelector('.create-document-section');
+                formSection.classList.add('show');
+                setTimeout(() => {
+                    document.getElementById('create-form').scrollIntoView({behavior: 'smooth'});
+                    document.getElementById('title').focus();
+                }, 100);
+            });
+        }
     </script>
 </body>
 </html>
