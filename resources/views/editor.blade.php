@@ -28,13 +28,13 @@
                 <button class="editor-menu-item">Help</button>
                 <div class="editor-menu-actions">
                     <button class="header-action-btn" aria-label="History">
-                        <span class="icon icon-md">@include('icons.document')</span>
+                        <span class="icon icon-md">@include('icons.history')</span>
                     </button>
                     <button class="header-action-btn" aria-label="Comments">
-                        <span class="icon icon-md">@include('icons.add')</span>
+                        <span class="icon icon-md">@include('icons.comment')</span>
                     </button>
                     <button class="header-action-btn" aria-label="Share">
-                        <span class="icon icon-md">@include('icons.add')</span>
+                        <span class="icon icon-md">@include('icons.share')</span>
                     </button>
                     <div class="user-menu" role="button" tabindex="0" aria-label="User menu">
                         <div class="user-avatar" aria-label="User avatar">{{ substr(Auth::user()->name, 0, 1) }}</div>
@@ -52,11 +52,6 @@
                     <span class="status" id="status" role="status" aria-live="polite">
                         <span class="status-text">Ready</span>
                     </span>
-                </div>
-                <div class="editor-title-bar-actions">
-                    <button class="header-action-btn" aria-label="Share">
-                        <span>Share</span>
-                    </button>
                 </div>
             </div>
 
@@ -174,22 +169,6 @@
                     class="editor" 
                     placeholder="Start typing your document..."
                 >{{ $document->content }}</textarea>
-            </div>
-            
-            <!-- Right Sidebar -->
-            <div class="editor-sidebar-right">
-                <button class="editor-sidebar-btn" title="Edit" aria-label="Edit">
-                    <span class="icon icon-md">@include('icons.document')</span>
-                </button>
-                <button class="editor-sidebar-btn" title="Add" aria-label="Add">
-                    <span class="icon icon-md">@include('icons.add')</span>
-                </button>
-                <button class="editor-sidebar-btn" title="Emoji" aria-label="Emoji">
-                    <span class="icon icon-md">@include('icons.smile')</span>
-                </button>
-                <button class="editor-sidebar-btn" title="Image" aria-label="Image">
-                    <span class="icon icon-md">@include('icons.image')</span>
-                </button>
             </div>
         </div>
     </div>

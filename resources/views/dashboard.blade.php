@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Collab</title>
     <link rel="stylesheet" href="{{ asset('css/ui.css') }}">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="app-layout">
@@ -23,10 +23,12 @@
                     <span>Collab</span>
                 </a>
                 <div class="search-container">
-                    <span class="search-icon">
-                        @include('icons.search')
-                    </span>
-                    <input type="search" class="search-bar" placeholder="Search" aria-label="Search documents">
+                    <div class="search-box">
+                        <button type="button" class="search-icon" aria-label="Search" onclick="document.querySelector('.search-input').focus()">
+                            @include('icons.search')
+                        </button>
+                        <input type="search" class="search-input" placeholder="Search" aria-label="Search documents">
+                    </div>
                 </div>
                 <div class="header-actions">
                     <button class="header-action-btn" aria-label="Favorites">
