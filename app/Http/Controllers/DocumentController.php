@@ -35,6 +35,15 @@ class DocumentController extends Controller
             'content' => $request->content ?? '',
         ]);
 
+        // Return JSON response for AJAX requests
+        if ($request->header('X-Requested-With') === 'XMLHttpRequest' || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'document' => $document,
+                'redirect' => route('documents.show', $document)
+            ]);
+        }
+
         return redirect()->route('documents.show', $document);
     }
 
@@ -46,15 +55,37 @@ class DocumentController extends Controller
 
         $request->validate([
             'content' => 'nullable|string',
+            'title' => 'nullable|string|max:255',
         ]);
 
-        $document->update([
-            'content' => $request->content ?? '',
-        ]);
+        $updateData = [];
+        
+        if ($request->has('content')) {
+            $updateData['content'] = $request->content ?? '';
+        }
+        
+        if ($request->has('title')) {
+            $updateData['title'] = $request->title;
+        }
+
+        $document->update($updateData);
 
         // Broadcast the update to all connected clients
+        if (isset($updateData['content'])) {
         broadcast(new DocumentUpdated($document))->toOthers();
+        }
 
-        return response()->json(['success' => true]);
+        return response()->json(['success' => true, 'document' => $document]);
+    }
+
+    public function destroy(Document $document)
+    {
+        if ($document->user_id !== Auth::id()) {
+            abort(403);
+        }
+
+        $document->delete();
+
+        return redirect()->route('dashboard')->with('success', 'Document deleted successfully');
     }
 }
