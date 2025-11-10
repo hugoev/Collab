@@ -336,9 +336,13 @@
         function saveDocument() {
             if (isSaving || isRemoteUpdate) return;
             
-            const currentContent = editor.value;
+            const currentContent = editor.value || '';
+            const normalizedCurrent = currentContent.trim();
+            const normalizedLast = (lastSavedContent || '').trim();
             
-            if (currentContent === lastSavedContent) {
+            if (normalizedCurrent === normalizedLast) {
+                // Update lastSavedContent to match current (handles whitespace differences)
+                lastSavedContent = currentContent;
                 const statusText = statusEl.querySelector('.status-text');
                 statusText.textContent = 'Ready';
                 statusEl.className = 'status';
@@ -369,7 +373,7 @@
                 return response.json();
             })
             .then(data => {
-                lastSavedContent = currentContent;
+                lastSavedContent = currentContent || '';
                 retryCount = 0;
                 const statusText = statusEl.querySelector('.status-text');
                 statusText.textContent = 'Saved';
@@ -427,7 +431,11 @@
 
         // Periodic save check
         setInterval(() => {
-            if (editor.value !== lastSavedContent && !isSaving && !isRemoteUpdate) {
+            const currentContent = editor.value || '';
+            const normalizedCurrent = currentContent.trim();
+            const normalizedLast = (lastSavedContent || '').trim();
+            
+            if (normalizedCurrent !== normalizedLast && !isSaving && !isRemoteUpdate) {
                 saveDocument();
             }
         }, 30000);

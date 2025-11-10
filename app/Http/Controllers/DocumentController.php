@@ -45,11 +45,11 @@ class DocumentController extends Controller
         }
 
         $request->validate([
-            'content' => 'required|string',
+            'content' => 'nullable|string',
         ]);
 
         $document->update([
-            'content' => $request->content,
+            'content' => $request->content ?? '',
         ]);
 
         // Broadcast the update to all connected clients
