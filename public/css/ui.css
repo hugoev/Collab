@@ -1416,13 +1416,8 @@ input[type="checkbox"] {
 .document-card-thumbnail-content {
   width: 100%;
   height: 100%;
-  padding: 16px 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  font-size: 10px;
-  color: #5f6368;
-  line-height: 1.5;
+  padding: 0;
+  display: block;
   overflow: hidden;
   background: #ffffff;
   margin: 8px;
@@ -1440,6 +1435,107 @@ input[type="checkbox"] {
   height: 20px;
   background: linear-gradient(to bottom, rgba(0, 0, 0, 0.02), transparent);
   pointer-events: none;
+  z-index: 2;
+}
+
+.document-card-thumbnail-content::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 20px;
+  background: linear-gradient(to top, rgba(255, 255, 255, 0.95), transparent);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.document-card-preview-html {
+  width: 357.14%; /* 100% / 0.28 */
+  min-height: 357.14%; /* 100% / 0.28 */
+  overflow: hidden;
+  position: relative;
+  color: #202124;
+  font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
+  padding: 43px 57px; /* 12px / 0.28, 16px / 0.28 */
+  box-sizing: border-box;
+  background: #ffffff;
+  transform: scale(0.28);
+  transform-origin: top left;
+}
+
+/* Preserve inline styles but ensure readability */
+.document-card-preview-html * {
+  max-width: 100%;
+}
+
+.document-card-preview-html h1 {
+  font-size: 24pt;
+  font-weight: 400;
+  margin: 0 0 8px 0;
+  line-height: 1.2;
+  color: #202124;
+}
+
+.document-card-preview-html h2 {
+  font-size: 18pt;
+  font-weight: 400;
+  margin: 24px 0 12px 0;
+  line-height: 1.2;
+  color: #202124;
+}
+
+.document-card-preview-html h3 {
+  font-size: 14pt;
+  font-weight: 400;
+  margin: 16px 0 8px 0;
+  line-height: 1.2;
+  color: #202124;
+}
+
+.document-card-preview-html p {
+  font-size: 11pt;
+  line-height: 1.5;
+  margin: 0 0 16px 0;
+  color: #202124;
+}
+
+.document-card-preview-html ul,
+.document-card-preview-html ol {
+  font-size: 11pt;
+  line-height: 1.6;
+  margin: 0 0 16px 0;
+  padding-left: 20px;
+  color: #202124;
+}
+
+.document-card-preview-html li {
+  margin-bottom: 4px;
+}
+
+.document-card-preview-html strong {
+  font-weight: 600;
+}
+
+/* Preserve text alignment */
+.document-card-preview-html [style*="text-align: center"],
+.document-card-preview-html [style*="text-align:center"] {
+  text-align: center !important;
+}
+
+.document-card-preview-html [style*="text-align: right"],
+.document-card-preview-html [style*="text-align:right"] {
+  text-align: right !important;
+}
+
+.document-card-preview-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  font-size: 10px;
+  color: #80868b;
+  font-style: italic;
 }
 
 .document-card-info {

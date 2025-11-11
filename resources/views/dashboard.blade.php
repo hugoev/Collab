@@ -174,14 +174,15 @@
                                 <div class="document-card" onclick="window.location.href='{{ route('documents.show', $document) }}'" role="button" tabindex="0" onkeydown="if(event.key === 'Enter' || event.key === ' ') { window.location.href='{{ route('documents.show', $document) }}'; }">
                                     <div class="document-card-thumbnail">
                                         <div class="document-card-thumbnail-content">
-                                            <div class="document-card-preview-title">{{ $document->title }}</div>
-                                            <div class="document-card-preview-content">
-                                                @if($document->content)
-                                                    {!! Str::limit(strip_tags($document->content), 200) ?: 'Empty document' !!}
-                                                @else
+                                            @if($document->content)
+                                                <div class="document-card-preview-html">
+                                                    {!! $document->content !!}
+                                                </div>
+                                            @else
+                                                <div class="document-card-preview-empty">
                                                     <span style="color: #80868b; font-style: italic;">Empty document</span>
-                                                @endif
-                                            </div>
+                                                </div>
+                                            @endif
                                         </div>
                                     </div>
                                     <div class="document-card-info">

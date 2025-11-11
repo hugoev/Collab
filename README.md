@@ -1,132 +1,115 @@
 # Collab - Real-time Collaborative Document Editor
 
-A minimal real-time collaborative document editor built with Laravel, WebSockets (Pusher), and pure CSS.
+A real-time collaborative document editor built with Laravel and Pusher WebSockets.
 
-## Features
+![Dashboard](githubimages/dashboard.png)
 
-- ✅ User authentication (email + password)
-- ✅ Dashboard to list user-owned documents
-- ✅ Create and edit documents
-- ✅ Real-time collaborative editing
-- ✅ Autosave on edit
-- ✅ Clean UI with custom pure CSS design system
+![Editor](githubimages/editor.png)
 
-## Requirements
+## Tech Stack
 
-- PHP 8.2+
-- Composer
-- MySQL or PostgreSQL
-- Pusher account (for real-time features) or Laravel WebSockets
+-   **Backend:** Laravel 12
+-   **Database:** MySQL/PostgreSQL
+-   **Real-time:** Pusher WebSockets
+-   **Frontend:** Blade templates + Vanilla JavaScript
 
 ## Installation
 
-1. **Clone the repository and install dependencies:**
-
 ```bash
+# Install dependencies
 composer install
-```
+npm install
 
-2. **Set up environment variables:**
-
-Copy `.env.example` to `.env` and configure:
-
-```bash
+# Configure environment
 cp .env.example .env
 php artisan key:generate
-```
 
-3. **Configure database:**
-
-Update your `.env` file with database credentials:
-
-```env
+# Configure database and Pusher in .env
 DB_CONNECTION=mysql
-DB_HOST=127.0.0.1
-DB_PORT=3306
 DB_DATABASE=collab
-DB_USERNAME=root
-DB_PASSWORD=
-```
-
-4. **Configure Pusher (for real-time features):**
-
-Get your Pusher credentials from [pusher.com](https://pusher.com) and add to `.env`:
-
-```env
-BROADCAST_CONNECTION=pusher
-
 PUSHER_APP_ID=your-app-id
 PUSHER_APP_KEY=your-app-key
 PUSHER_APP_SECRET=your-app-secret
 PUSHER_APP_CLUSTER=your-cluster
-```
 
-5. **Run migrations:**
-
-```bash
+# Run migrations and seed
 php artisan migrate
-```
+php artisan db:seed --class=DocumentSeeder
 
-6. **Start the development server:**
-
-```bash
+# Start server
 php artisan serve
 ```
 
-Visit `http://localhost:8000` in your browser.
+## API Endpoints
 
-## Usage
+### Authentication
 
-1. **Register a new account** at `/register`
-2. **Login** at `/login`
-3. **Create a document** from the dashboard
-4. **Edit documents** - changes are saved automatically and broadcast to all connected users viewing the same document
+-   `POST /login` - Authenticate user
+-   `POST /register` - Create account
+-   `POST /logout` - Logout (auth required)
 
-## Architecture
+### Documents (Auth Required)
 
-- **Backend:** Laravel 12
-- **Realtime:** Pusher WebSockets
-- **Frontend:** Blade templates + Vanilla JavaScript
-- **Styling:** Pure CSS (no frameworks)
-- **Database:** MySQL/PostgreSQL
+-   `GET /dashboard` - List user documents
+-   `GET /documents/{id}` - View document
+-   `POST /documents` - Create document
+-   `PUT /documents/{id}` - Update document (content/title)
+-   `DELETE /documents/{id}` - Delete document
 
-## Routes
+## Database Schema
 
-- `GET /` - Redirects to login
-- `GET /login` - Login page
-- `POST /login` - Login handler
-- `GET /register` - Registration page
-- `POST /register` - Registration handler
-- `GET /dashboard` - User documents list (auth required)
-- `GET /documents/{id}` - Document editor (auth required)
-- `POST /documents` - Create document (auth required)
-- `PUT /documents/{id}` - Update document (auth required)
+```sql
+-- Documents table
+CREATE TABLE documents (
+    id BIGINT PRIMARY KEY,
+    user_id BIGINT FOREIGN KEY -> users(id) ON DELETE CASCADE,
+    title VARCHAR(255),
+    content TEXT,  -- Stores HTML
+    created_at TIMESTAMP,
+    updated_at TIMESTAMP
+);
+```
 
-## Real-time Editing
+## Real-time Broadcasting
 
-The editor uses Pusher WebSockets to broadcast document updates in real-time. When a user types:
+### Event: `DocumentUpdated`
 
-1. Changes are debounced (1 second delay)
-2. Content is saved to the database via AJAX
-3. Update is broadcast to all other users viewing the same document
-4. Other users' editors update instantly
+-   Broadcasts to private channel: `private-document.{documentId}`
+-   Only document owner can subscribe (authorized in `routes/channels.php`)
+-   Broadcasts when content is updated (not title-only updates)
 
-## Development
+### Flow
 
-The project follows Laravel conventions. Key files:
+1. User edits → `PUT /documents/{id}` with content
+2. Controller updates database
+3. `DocumentUpdated` event broadcasts to channel
+4. All subscribed clients receive update
 
-- `app/Models/Document.php` - Document model
-- `app/Http/Controllers/DocumentController.php` - Document CRUD
-- `app/Events/DocumentUpdated.php` - Broadcasting event
-- `resources/views/editor.blade.php` - Editor view with real-time JS
-- `public/css/ui.css` - Custom CSS design system
+## Key Backend Files
 
-## Notes
+```
+app/Http/Controllers/
+├── AuthController.php       # Login, register, logout
+└── DocumentController.php  # CRUD + broadcasting
 
-- Documents are owned by users (one-to-many relationship)
-- Only document owners can view/edit their documents
-- Conflict resolution: Last update wins (simple MVP approach)
-- Plain text only (no rich text editing)
+app/Models/
+├── User.php
+└── Document.php             # Belongs to User
+
+app/Events/
+└── DocumentUpdated.php      # Broadcasting event
+
+routes/
+├── web.php                  # HTTP routes
+└── channels.php             # Channel authorization
+```
+
+## Security
+
+-   All document routes require authentication
+-   Users can only access their own documents (authorization check in controllers)
+-   CSRF protection on all POST/PUT/DELETE requests
+-   Private channels require ownership verification
 
 ## License
 
